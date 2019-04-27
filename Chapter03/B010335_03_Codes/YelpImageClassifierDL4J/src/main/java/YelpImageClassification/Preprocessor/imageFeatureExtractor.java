@@ -6,17 +6,24 @@ import static YelpImageClassification.Preprocessor.imageUtils.resizeImg;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class imageFeatureExtractor {
     /**  Define RegEx to extract jpg name from the image class which is used to match against training labels */
@@ -34,8 +41,12 @@ public class imageFeatureExtractor {
      * @param ids optional parameter to subset the images loaded from photoDir.
      */
     public static List<String> getImageIds(String photoDir, Map<Integer, String> businessMap, List<String> businessIds) {
-        File d = new File(photoDir);
-        List<String> imgsPath = Arrays.stream(d.listFiles()).map(f -> f.toString()).collect(Collectors.toList());
+    	final File d = new File(photoDir);
+        
+        final FilenameFilter filter
+        = (File dir, String name) -> StringUtils.contains(name, "_")?false:true;
+		 
+		final List<String> imgsPath = Arrays.stream(d.listFiles(filter )).map(f -> f.toString()).collect(Collectors.toList());
 
         boolean defaultBusinessMap = businessMap.size() == 1 && businessMap.get(-1).equals("-1");
         boolean defaultBusinessIds = businessIds.size() == 1 && businessIds.get(0).equals("-1");
@@ -46,8 +57,19 @@ public class imageFeatureExtractor {
                     .map(x -> new AbstractMap.SimpleEntry<Integer, String>(extractInteger(x), x))
                     .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
             List<Integer> imgsPathSub = imageFeatureExtractor.getImgIdsFromBusinessId(businessMap, businessIds);
-            return imgsPathSub.stream().filter(x -> imgsMap.containsKey(x)).map(x -> imgsMap.get(x))
-                    .collect(Collectors.toList());
+             
+//            List<String> result =  new ArrayList<String>();
+            List<String> result =  imgsPathSub.stream().filter(x -> imgsMap.containsKey(x)).map(x -> imgsMap.get(x))
+            .collect(Collectors.toList());
+//            for(Entry<Integer, String> entryset:imgsMap.entrySet()) {
+//            	Integer key = entryset.getKey();
+//            	String value = entryset.getValue();
+//            	if(imgsPathSub.contains(key) && (!result.contains(value))) {
+//            		result.add(value);
+//            	}
+//            }
+            
+            return result;
         }
     }
 

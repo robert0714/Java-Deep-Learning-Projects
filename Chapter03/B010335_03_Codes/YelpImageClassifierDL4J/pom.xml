@@ -15,22 +15,22 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
 		<!-- <nd4j.backend>nd4j-cuda-9.0-platform</nd4j.backend> -->
-		<nd4j.version>1.0.0-alpha</nd4j.version>
-		<dl4j.version>1.0.0-alpha</dl4j.version>
-		<datavec.version>1.0.0-alpha</datavec.version>
-		<arbiter.version>1.0.0-alpha</arbiter.version>
+		<nd4j.version>1.0.0-beta3</nd4j.version>
+		<dl4j.version>1.0.0-beta3</dl4j.version>
+		<datavec.version>1.0.0-beta3</datavec.version>
+		<arbiter.version>1.0.0-beta3</arbiter.version>
 		<logback.version>1.2.3</logback.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.nd4j</groupId>
-			<artifactId>nd4j-cuda-9.0-platform</artifactId>
+			<artifactId>nd4j-cuda-10.0-platform</artifactId>
 			<version>${nd4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.deeplearning4j</groupId>
-			<artifactId>deeplearning4j-cuda-9.0</artifactId>
+			<artifactId>deeplearning4j-cuda-10.0</artifactId>
 			<version>${dl4j.version}</version>
 		</dependency>
 		<dependency>

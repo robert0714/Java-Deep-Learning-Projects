@@ -25,15 +25,27 @@ import YelpImageClassification.Trainer.CNNEpochs;
 import YelpImageClassification.Trainer.NetworkSaver;
 
 public class YelpImageClassifier {
+	private static String lOCAL_HHOME = System.getProperty("user.home");
 	/**
 	 * https://www.kaggle.com/c/yelp-restaurant-photo-classification/data
 	 * **/
     public static void main(String[] args) throws IOException {
-        Map<String, Set<Integer>> labMap = readBusinessLabels("C:/Users/admin-karim/Downloads/Yelp/labels/train.csv");
+        Map<String, Set<Integer>> labMap = readBusinessLabels(lOCAL_HHOME+"/Downloads/Yelp/labels/train.csv");
         
-        Map<Integer, String> businessMap = readBusinessToImageLabels("C:/Users/admin-karim/Downloads/Yelp/labels/train_photo_to_biz_ids.csv");
+        Map<Integer, String> businessMap = readBusinessToImageLabels(lOCAL_HHOME+"/Downloads/Yelp/labels/train_photo_to_biz_ids.csv");
         List<String> businessIds = businessMap.entrySet().stream().map(e -> e.getValue()).distinct().collect(Collectors.toList());
-        List<String> imgs = getImageIds("C:/Users/admin-karim/Downloads/Yelp/images/train/", businessMap, businessIds).subList(0, 100); // 20000 images
+        
+        final List<String> imgIdsList = getImageIds(lOCAL_HHOME+"/Downloads/Yelp/images/train/", businessMap, businessIds);
+                
+        List<String> imgs =null; 
+        
+        if(imgIdsList.size() > 100) {
+        	imgs =imgIdsList.subList(0, 100); // 20000 images
+        }else {
+        	imgs =imgIdsList; 
+        }
+       
+        
         System.out.println("Image ID retreival done!");
 
         Map<Integer, List<Integer>> dataMap = processImages(imgs, 64);
@@ -55,8 +67,8 @@ public class YelpImageClassifier {
         CNNEpochs.trainModelEpochs(alignedData, 8, "results/models/model8");
 
         // processing test data for scoring
-        Map<Integer, String> businessMapTE = readBusinessToImageLabels("C:/Users/admin-karim/Downloads/Yelp/labels/test_photo_to_biz.csv");
-        List<String> imgsTE = getImageIds("C:/Users/admin-karim/Downloads/Yelp/images/test/", businessMapTE, businessMapTE.values().stream().distinct().collect(Collectors.toList())).subList(0, 100);
+        Map<Integer, String> businessMapTE = readBusinessToImageLabels(lOCAL_HHOME+"/Downloads/Yelp/labels/test_photo_to_biz.csv");
+        List<String> imgsTE = getImageIds(lOCAL_HHOME+"/Downloads/Yelp/images/test/", businessMapTE, businessMapTE.values().stream().distinct().collect(Collectors.toList())).subList(0, 100);
 
         Map<Integer, List<Integer>> dataMapTE = processImages(imgsTE, 64); // make them 64x64
         FeatureAndDataAligner alignedDataTE = new FeatureAndDataAligner(dataMapTE, businessMapTE, Optional.empty());

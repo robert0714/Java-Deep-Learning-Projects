@@ -9,10 +9,11 @@ import javax.imageio.ImageIO;
 import org.imgscalr.Scalr;
 
 public class SquaringImage {
+	private final static String USER_DIR = System.getProperty("user.dir");
     public static void main(String[] args) throws IOException {
-        BufferedImage myimg = ImageIO.read(new File("data/images/train/147.jpg"));
+        BufferedImage myimg = ImageIO.read(new File(USER_DIR+"/data/images/train/147.jpg"));
         BufferedImage myimgSquare = makeSquare(myimg);
-        ImageIO.write(myimgSquare, "jpg", new File("data/images/preprocessed/147square.jpg"));
+        ImageIO.write(myimgSquare, "jpg", new File(USER_DIR+"/data/images/preprocessed/147square.jpg"));
     }
 
     private static BufferedImage makeSquare(BufferedImage img) {

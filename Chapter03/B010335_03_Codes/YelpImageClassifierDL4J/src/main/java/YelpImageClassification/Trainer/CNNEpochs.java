@@ -53,7 +53,7 @@ public class CNNEpochs {
 		double nfeatures = ds.getFeatures().getRow(0).length(); // hyper, hyper parameter
 		// System.out.println(nfeatures);
 
-		int nlabels = ds.getLabels().getRow(0).length();
+		int nlabels = ds.getLabels().getRow(0L).rows();
 		System.out.println(nlabels);
 
 		int numRows = (int) Math.sqrt(nfeatures); // numRows * numColumns must equal columns in initial data * channels
@@ -82,7 +82,13 @@ public class CNNEpochs {
 						// neural network encoding such that any labels that are considered true are 1s.
 						// The rest are zeros.
 		// System.out.println("Loaded " + ds.labelCounts());
-		Nd4j.shuffle(ds.getFeatureMatrix(), new Random(seed), 1); // this shuffles rows in the ds.
+		INDArray matrixs = ds.getFeaturesMaskArray();
+			
+		if(matrixs == null) {
+			matrixs = ds.getFeatures();
+		}
+		
+		Nd4j.shuffle(matrixs, new Random(seed), 1); // this shuffles rows in the ds.
 		Nd4j.shuffle(ds.getLabels(), new Random(seed), 1); // this shuffles the labels accordingly
 		SplitTestAndTrain trainTest = ds.splitTestAndTrain(75, new Random(seed)); // Random Seed not needed here
 
@@ -152,7 +158,7 @@ public class CNNEpochs {
 		Layer[] layers = model.getLayers();
 		int totalNumParams = 0;
 		for (int i = 0; i < layers.length; i++) {
-			int nParams = layers[i].numParams();
+			long nParams = layers[i].numParams();
 			System.out.println("Number of parameters in layer " + i + ": " + nParams);
 			totalNumParams += nParams;
 		}
@@ -187,7 +193,7 @@ public class CNNEpochs {
 		Evaluation eval = new Evaluation(outputNum);
 		while (epochitTe.hasNext()) {
 			DataSet testDS = epochitTe.next(nbatch);
-			INDArray output = model.output(testDS.getFeatureMatrix());
+			INDArray output = model.output(testDS.getFeaturesMaskArray());
 			eval.eval(testDS.getLabels(), output);
 		}
 
