@@ -43,10 +43,10 @@ public class imageFeatureExtractor {
     public static List<String> getImageIds(String photoDir, Map<Integer, String> businessMap, List<String> businessIds) {
     	final File d = new File(photoDir);
         
-        final FilenameFilter filter
-        = (File dir, String name) -> StringUtils.contains(name, "_")?false:true;
+//        final FilenameFilter filter
+//        = (File dir, String name) -> StringUtils.contains(name, "_")?false:true;
 		 
-		final List<String> imgsPath = Arrays.stream(d.listFiles(filter )).map(f -> f.toString()).collect(Collectors.toList());
+		final List<String> imgsPath = Arrays.stream(d.listFiles(  )).map(f -> f.toString()).collect(Collectors.toList());
 
         boolean defaultBusinessMap = businessMap.size() == 1 && businessMap.get(-1).equals("-1");
         boolean defaultBusinessIds = businessIds.size() == 1 && businessIds.get(0).equals("-1");
@@ -59,8 +59,10 @@ public class imageFeatureExtractor {
             List<Integer> imgsPathSub = imageFeatureExtractor.getImgIdsFromBusinessId(businessMap, businessIds);
              
 //            List<String> result =  new ArrayList<String>();
+            
             List<String> result =  imgsPathSub.stream().filter(x -> imgsMap.containsKey(x)).map(x -> imgsMap.get(x))
             .collect(Collectors.toList());
+            
 //            for(Entry<Integer, String> entryset:imgsMap.entrySet()) {
 //            	Integer key = entryset.getKey();
 //            	String value = entryset.getValue();
